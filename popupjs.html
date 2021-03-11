@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Popup Js</title>
+  <style>
+    .container {
+      position: relative;
+      width: 80%;
+      margin: 0 auto;
+    }
+    .modal {
+      display: none;
+      position: absolute;
+      top: 40px;
+      left: 0px;
+      width: 250px;
+      border-radius: 10px;
+      background-color: #fff;
+      transition: display .5s
+    }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      const button = document.querySelector('.button')
+      const modal = document.querySelector('.modal')
+      button.addEventListener('mouseover', function () {
+        modal.style.display = 'block'
+      })
+      button.addEventListener('mouseleave', function () {
+        modal.style.display = 'none'
+      })
+      button.addEventListener('click', function(event){
+        event.preventDefault()
+      })
+    })
+  </script>
+</head>
+<body>
+  <div class="container">
+    <a class="button" href="http://abidjan.net">Afficher la popup</a>
+    <div class="modal">
+      <h5 class="title">Notre popup</h5>
+      <div class="comment">
+        <img src="https://via.placeholder.com/150" alt="">
+        <p>
+          Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

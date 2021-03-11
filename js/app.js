@@ -1,5 +1,6 @@
 // conteneur qui va recevoir notre canvas
 const container = document.body
+const loader = document.querySelector('.loader')
 
 // tableau sources des images à utiliser
 const images = [
@@ -143,22 +144,45 @@ const material = new THREE.MeshBasicMaterial({
   side: THREE.DoubleSide
 })
 function loadTexture () {
+  toggleLoader()
   if (currentImageIndex > (images.length - 1)) {
     currentImageIndex = 0
   }
-  let texture = textureItem.load(`../images/${images[currentImageIndex].image}`)
+  let texture = textureItem.load(`../images/${images[currentImageIndex].image}`, () => {
+    toggleLoader('hide')
+  })
   texture.wrapS = THREE.RepeatWrapping
   texture.repeat.x = -1
   material.map = texture
+
   currentImageIndex += 1
 }
 loadTexture()
 const sphere = new THREE.Mesh(geometry, material)
 scene.add(sphere)
 
+function toggleLoader (state = 'show') {
+  if (state === 'show') {
+    loader.style.display = 'flex'
+  } else if (state === 'hide') {
+    loader.style.display = 'none'
+  }
+}
+
 // trying raycaster
 const raycaster = new THREE.Raycaster()
 const  mouse = new THREE.Vector2()
+
+function pointerLoader() {
+  const map = new THREE.TextureLoader().load( "../images/next.png" );
+  const material = new THREE.SpriteMaterial( { map: map, color: 0xffffff, side: THREE.DoubleSide } );
+  const sprite = new THREE.Sprite( material );
+  sprite.center.x = 0.1
+  sprite.center.y = 0.1
+  console.log(sprite)
+  sprite.scale.set(0.1, 0.1, 0.1)
+  scene.add( sprite );
+}
 
 function render() {
 
@@ -168,28 +192,33 @@ function render() {
 	// calculate objects intersecting the picking ray
 	const intersects = raycaster.intersectObjects( scene.children );
   console.log(intersects)
-	// for ( let i = 0; i < intersects.length; i ++ ) {
+	for ( let i = 0; i < intersects.length; i ++ ) {
+    const sprite = intersects[ i ].object
+		
+    if (sprite.type === 'Sprite') {
+      alert('text')
+    }
 
-	// 	intersects[ i ].object.material.color.set( 0xff0000 );
-
-	// }
+	}
 
 	//renderer.render( scene, camera );
 
 }
 
-// container.addEventListener('click', (event) => {
-//   mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-// 	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-//   console.log(mouse.x, mouse.y)
-//   render()
-// }, true)
+container.addEventListener('mousemove', (event) => {
+  mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+  // console.log(mouse.x, mouse.y)
+  render()
+}, true)
 
-document.querySelector('button#changeImage').addEventListener('click', (event) => {
+document.querySelector('#next').addEventListener('click', (event) => {
   camera.zoom = 10
+  // toggleLoader()
   loadTexture()
 })
-
+renderer.render(scene, camera)
+toggleLoader('hide')
 const animate = () => {
   window.requestAnimationFrame(animate)
   controls.update()
@@ -197,3 +226,4 @@ const animate = () => {
 }
 
 animate()
+// pointerLoader()
